@@ -13,15 +13,21 @@ void showCustomClassDialog(BuildContext context) {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Department Input Field
+            TextField(
+              controller: departmentController,
+              decoration: InputDecoration(labelText: "Course Name"),
+            ),
+            SizedBox(height: 10),
             // Dropdown for Batch Selection
             DropdownButtonFormField<String>(
               decoration: InputDecoration(labelText: "Select Batch"),
               value: selectedBatch,
               items: ['CSE-20', 'CSE-21', 'CSE-22', 'CSE-23', 'CSE-24']
                   .map((batch) => DropdownMenuItem(
-                value: batch,
-                child: Text(batch),
-              ))
+                        value: batch,
+                        child: Text(batch),
+                      ))
                   .toList(),
               onChanged: (value) {
                 selectedBatch = value;
@@ -29,17 +35,25 @@ void showCustomClassDialog(BuildContext context) {
             ),
             SizedBox(height: 10),
 
-            // Department Input Field
-            TextField(
-              controller: departmentController,
-              decoration: InputDecoration(labelText: "Course Name"),
-            ),
-            SizedBox(height: 10),
-
-            // Course Input Field
-            TextField(
-              controller: courseController,
-              decoration: InputDecoration(labelText: "Course"),
+            // Session Dropdown menu:
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(labelText: "Select Session"),
+              value: selectedBatch,
+              items: [
+                'Session-20',
+                'Session-21',
+                'Session-22',
+                'Session-23',
+                'Session-24'
+              ]
+                  .map((batch) => DropdownMenuItem(
+                        value: batch,
+                        child: Text(batch),
+                      ))
+                  .toList(),
+              onChanged: (value) {
+                selectedBatch = value;
+              },
             ),
           ],
         ),
@@ -48,16 +62,15 @@ void showCustomClassDialog(BuildContext context) {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red
-                ),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 onPressed: () => Navigator.pop(context),
-                child: Text("Cancel",style: TextStyle(color: Colors.white),),
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green
-                ),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                 onPressed: () {
                   // Handle save action
                   String batch = selectedBatch ?? "N/A";
@@ -66,12 +79,16 @@ void showCustomClassDialog(BuildContext context) {
 
                   if (department.isNotEmpty && course.isNotEmpty) {
                     // Process data (you can save to database or state)
-                    print("Batch: $batch, Department: $department, Course: $course");
+                    print(
+                        "Batch: $batch, Department: $department, Course: $course");
 
                     Navigator.pop(context);
                   }
                 },
-                child: Text("Save",style: TextStyle(color: Colors.white),),
+                child: Text(
+                  "Create",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           )
