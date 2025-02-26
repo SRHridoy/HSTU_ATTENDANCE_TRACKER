@@ -83,34 +83,55 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  child: ListTile(
-                    leading: Text(
-                        '${courses[index][CourseDBHelper.COLUMN_COURSE_SNO]}'),
-                    title: Text(
-                      '📌${courses[index][CourseDBHelper.COLUMN_COUSE_NAME]}  \n${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey.shade300,
+                          width: 1,
+                        ),
                       ),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.shade300,
+                          blurRadius: 5,
+                          spreadRadius: 2,
+                        ),
+                      ],
                     ),
-                    subtitle: Text(
-                      '${courses[index][CourseDBHelper.COLUMN_BATCH_NAME]}  |  ${courses[index][CourseDBHelper.COLUMN_SESSION]}',
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: Colors.grey.shade700,
+                    child: ListTile(
+                      leading: Text(
+                          '${courses[index][CourseDBHelper.COLUMN_COURSE_SNO]}'),
+                      title: Text(
+                        '📌${courses[index][CourseDBHelper.COLUMN_COUSE_NAME]}  \n${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
+                      subtitle: Text(
+                        '${courses[index][CourseDBHelper.COLUMN_BATCH_NAME]}  |  ${courses[index][CourseDBHelper.COLUMN_SESSION]}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      onLongPress: () {
+                        _showOptionsDialog(context, index);
+                      },
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return StudentListScreen(
+                              tableName: courses[index]
+                                  [CourseDBHelper.COLUMN_COUSE_CODE]);
+                        }));
+                      },
                     ),
-                    onLongPress: () {
-                      _showOptionsDialog(context, index);
-                    },
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return StudentListScreen(
-                            tableName: courses[index]
-                                [CourseDBHelper.COLUMN_COUSE_CODE]);
-                      }));
-                    },
                   ),
                 );
               },
