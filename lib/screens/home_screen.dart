@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:hstu_attendance_tracker/screens/attendance_screen.dart';
+import 'package:hstu_attendance_tracker/services/caching/supabase_to_sqflite.dart';
 import 'package:hstu_attendance_tracker/services/db_services/course_db_helper.dart';
 import 'package:hstu_attendance_tracker/utils/custom_colors.dart';
 
@@ -47,54 +49,62 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: courses.isNotEmpty
           ? ListView.builder(
-        itemCount: courses.length,
-        itemBuilder: (context, index) {
-          return Slidable(
-            key: ValueKey(courses[index][CourseDBHelper.COLUMN_COURSE_SNO]),
-            startActionPane: ActionPane(
-              motion: const DrawerMotion(),
-              children: [
-                SlidableAction(
-                  onPressed: (context) {
-                    showCourseDialog(course: courses[index]);
-                  },
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  icon: Icons.edit,
-                  label: 'Edit',
-                ),
-                SlidableAction(
-                  onPressed: (context) async {
-                    bool check = await dbRef.deleteCourse(
-                        sno: courses[index][CourseDBHelper.COLUMN_COURSE_SNO]);
-                    if (check) {
-                      getCourses();
-                    }
-                  },
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  icon: Icons.delete,
-                  label: 'Delete',
-                ),
-              ],
-            ),
-            child: ListTile(
-              leading: Text('${courses[index][CourseDBHelper.COLUMN_COURSE_SNO]}'),
-              title: Text(
-                  '📌 ${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]} 🔸 ${courses[index][CourseDBHelper.COLUMN_COUSE_NAME]}',),
-              subtitle: Text(
-                  '${courses[index][CourseDBHelper.COLUMN_BATCH_NAME]}  |  ${courses[index][CourseDBHelper.COLUMN_SESSION]}'),
-              onLongPress: () {
-                _showOptionsDialog(context, index);
+              itemCount: courses.length,
+              itemBuilder: (context, index) {
+                return Slidable(
+                  key: ValueKey(
+                      courses[index][CourseDBHelper.COLUMN_COURSE_SNO]),
+                  startActionPane: ActionPane(
+                    motion: const DrawerMotion(),
+                    children: [
+                      SlidableAction(
+                        onPressed: (context) {
+                          showCourseDialog(course: courses[index]);
+                        },
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                        icon: Icons.edit,
+                        label: 'Edit',
+                      ),
+                      SlidableAction(
+                        onPressed: (context) async {
+                          bool check = await dbRef.deleteCourse(
+                              sno: courses[index]
+                                  [CourseDBHelper.COLUMN_COURSE_SNO]);
+                          if (check) {
+                            getCourses();
+                          }
+                        },
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        icon: Icons.delete,
+                        label: 'Delete',
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    leading: Text(
+                        '${courses[index][CourseDBHelper.COLUMN_COURSE_SNO]}'),
+                    title: Text(
+                      '📌 ${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]} 🔸 ${courses[index][CourseDBHelper.COLUMN_COUSE_NAME]}',
+                    ),
+                    subtitle: Text(
+                        '${courses[index][CourseDBHelper.COLUMN_BATCH_NAME]}  |  ${courses[index][CourseDBHelper.COLUMN_SESSION]}'),
+                    onLongPress: () {
+                      _showOptionsDialog(context, index);
+                    },
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return StudentListScreen(
+                            tableName: courses[index]
+                                [CourseDBHelper.COLUMN_COUSE_CODE]);
+                      }));
+                    },
+                  ),
+                );
               },
-
-              onTap: () {
-                /// ekhane dynamically page create kore niya jawa lagbe...
-              },
-            ),
-          );
-        },
-      )
+            )
           : Center(child: Text('No Courses Assigned yet!')),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -173,13 +183,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 SizedBox(height: 10),
                 DropdownButtonFormField<String>(
-                  decoration: InputDecoration(labelText: "Select Batch"),
+                  decoration: InputDecoration(labelText: "Select Department"),
                   value: selectedBatch,
-                  items: ['CSE-20', 'CSE-21', 'CSE-22', 'CSE-23', 'CSE-24']
+                  items: [
+                    'CSE',
+                    'EEE',
+                    'ECE',
+                    'Math',
+                    'English',
+                    'Architecture',
+                    'Physics',
+                    'Chemistry',
+                    'Statistics',
+                    'Agriculture',
+                    'DVM'
+                  ]
                       .map((batch) => DropdownMenuItem(
-                    value: batch,
-                    child: Text(batch),
-                  ))
+                            value: batch,
+                            child: Text(batch),
+                          ))
                       .toList(),
                   onChanged: (value) {
                     setState(() {
@@ -191,17 +213,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 DropdownButtonFormField<String>(
                   decoration: InputDecoration(labelText: "Select Session"),
                   value: selectedSession,
-                  items: [
-                    'Session-20',
-                    'Session-21',
-                    'Session-22',
-                    'Session-23',
-                    'Session-24'
-                  ]
+                  items: ['2020', '2021', '2022', '2023', '2024']
                       .map((session) => DropdownMenuItem(
-                    value: session,
-                    child: Text(session),
-                  ))
+                            value: session,
+                            child: Text(session),
+                          ))
                       .toList(),
                   onChanged: (value) {
                     setState(() {
@@ -222,7 +238,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text("Cancel", style: TextStyle(color: Colors.white)),
                 ),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
                     if (courseCodeController.text.isNotEmpty &&
                         courseNameController.text.isNotEmpty &&
@@ -235,6 +252,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           courseName: courseNameController.text,
                           batchName: selectedBatch!,
                           session: selectedSession!,
+                        );
+                        // create new student table if not exists
+                        final caching = Caching();
+                        caching.saveStudentsToLocalDatabase(
+                          courseCodeController.text,
+                          selectedBatch!,
+                          selectedSession!,
                         );
                         if (inserted) getCourses();
                       } else {

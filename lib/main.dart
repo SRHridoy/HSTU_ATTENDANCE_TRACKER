@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:hstu_attendance_tracker/screens/home_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:hstu_attendance_tracker/screens/splash_screen.dart';
+import 'package:hstu_attendance_tracker/utils/supabase_const.dart';
 
-void main(){
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: uRL,
+    anonKey: anomKEY,
+  );
   runApp(HstuAttendanceTracker());
 }
 

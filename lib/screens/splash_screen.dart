@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:hstu_attendance_tracker/screens/home_screen.dart';
 import 'package:hstu_attendance_tracker/utils/custom_colors.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -22,7 +21,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: CustomColors.primaryColor,
       body: Center(
