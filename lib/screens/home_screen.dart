@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hstu_attendance_tracker/screens/attendance_screen.dart';
 import 'package:hstu_attendance_tracker/services/caching/supabase_to_sqflite.dart';
 import 'package:hstu_attendance_tracker/services/db_services/course_db_helper.dart';
@@ -86,10 +87,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     leading: Text(
                         '${courses[index][CourseDBHelper.COLUMN_COURSE_SNO]}'),
                     title: Text(
-                      '📌 ${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]} 🔸 ${courses[index][CourseDBHelper.COLUMN_COUSE_NAME]}',
+                      '📌${courses[index][CourseDBHelper.COLUMN_COUSE_NAME]}  \n${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     subtitle: Text(
-                        '${courses[index][CourseDBHelper.COLUMN_BATCH_NAME]}  |  ${courses[index][CourseDBHelper.COLUMN_SESSION]}'),
+                      '${courses[index][CourseDBHelper.COLUMN_BATCH_NAME]}  |  ${courses[index][CourseDBHelper.COLUMN_SESSION]}',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
                     onLongPress: () {
                       _showOptionsDialog(context, index);
                     },

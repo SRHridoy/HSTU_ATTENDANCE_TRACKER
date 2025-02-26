@@ -21,7 +21,9 @@ class DatabaseHelper {
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           // Schema updates (if needed)
-          print("⚠️ Schema updated.");
+          if (kDebugMode) {
+            print("⚠️ Schema updated.");
+          }
         }
       },
       onCreate: (db, version) async {

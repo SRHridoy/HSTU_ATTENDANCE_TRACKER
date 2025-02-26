@@ -44,6 +44,7 @@ dependencies:
   supabase_flutter: ^2.8.4
   file_picker: ^9.0.1
   excel: ^4.0.6
+  google_fonts: ^6.2.1
 
 
 dev_dependencies:
