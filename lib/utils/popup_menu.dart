@@ -14,16 +14,15 @@ class PopupMenu {
           value: 1,
           child: Row(
             children: [
-              Icon(
-                Icons.upload_file,
-                color: CustomColors.primaryTextColor,
-              ),
-              SizedBox(width: 10),
+              Icon(Icons.upload_file, color: Colors.blueAccent),
+              SizedBox(width: 12),
               Text(
-                "Import excel",
+                "Import Excel",
                 style: TextStyle(
-                    color: CustomColors.primaryTextColor,
-                    fontWeight: FontWeight.bold),
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
             ],
           ),
@@ -32,31 +31,34 @@ class PopupMenu {
           value: 2,
           child: Row(
             children: [
-              Icon(
-                Icons.info,
-                color: CustomColors.primaryTextColor,
-              ),
-              SizedBox(width: 10),
+              Icon(Icons.info, color: Colors.green),
+              SizedBox(width: 12),
               Text(
-                "About us",
+                "About Us",
                 style: TextStyle(
-                    color: CustomColors.primaryTextColor,
-                    fontWeight: FontWeight.bold),
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
             ],
           ),
         ),
       ],
       offset: Offset(0, 60),
-      color: Color(0xffe17d5a),
-      elevation: 2,
-      // Handling item selection
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      color: Colors.white,
+      elevation: 5,
       onSelected: (value) {
         if (value == 1) {
-          /// Corrected by Dev-Hridoy...
-          Navigator.push(context, MaterialPageRoute(builder: (context) => AddExcelFileScreen()));// Call a method for Import CSV
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddExcelFileScreen()),
+          );
         } else if (value == 2) {
-          _showAboutDialog(context); // Call a method for About
+          _showAboutDialog(context);
         }
       },
     );
@@ -66,52 +68,82 @@ class PopupMenu {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("About Us", style: TextStyle(fontWeight: FontWeight.bold)),
-        content: RichText(
-          text: TextSpan(
-            style: TextStyle(color: Colors.black, fontSize: 16),
-            children: [
-              TextSpan(text: "Acknowledgement goes to "),
-              TextSpan(
-                text: "Md. Sohanur Rahman Hridoy",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              TextSpan(text: ", Student ID-2102002, "),
-              TextSpan(
-                text: "Md. Khaled Amin Shawon",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              TextSpan(text: ", Student ID-2102003, "),
-              TextSpan(
-                text: "G.M. Nazmul Hassan",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              TextSpan(text: ", Student ID-2102055, "),
-              TextSpan(
-                  text:
-                      ", B.Sc. (Engineering) in C.S.E. Session-21, have developed this "),
-              TextSpan(
-                text: "Teacher Assistant",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              TextSpan(
-                  text:
-                      " as their 3rd year academic project under the supervision of "),
-              TextSpan(
-                text: "Md. Arshad Ali",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              TextSpan(text: ", Professor, Dept. of C.S.E., HSTU, Dinajpur."),
-            ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        backgroundColor: Colors.white,
+        title: Center(
+          child: Text(
+            "About Us",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              color: Colors.blueAccent,
+            ),
           ),
         ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Divider(),
+            SizedBox(height: 10),
+            Text(
+              "This project, 'Teacher Assistant,' was developed as a 3rd-year academic project by:",
+              style: TextStyle(fontSize: 16, color: Colors.black87),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 12),
+            _buildContributor("Md. Sohanur Rahman Hridoy", "ID-2102002"),
+            _buildContributor("Md. Khaled Amin Shawon", "ID-2102003"),
+            _buildContributor("G.M. Nazmul Hassan", "ID-2102055"),
+            SizedBox(height: 10),
+            Text(
+              "Under the supervision of:",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
+            ),
+            Text(
+              "Md. Arshad Ali\nProfessor, Dept. of C.S.E., HSTU, Dinajpur",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: Colors.black87),
+            ),
+          ],
+        ),
         actions: [
-          TextButton(
+          Center(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               onPressed: () => Navigator.pop(context),
-              child: Text("Close",
-                  style: TextStyle(
-                    color: Colors.black,
-                  ))),
+              child: Text(
+                "Close",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Widget _buildContributor(String name, String id) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Column(
+        children: [
+          Text(
+            name,
+            style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
+          ),
+          Text(
+            id,
+            style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+          ),
         ],
       ),
     );
