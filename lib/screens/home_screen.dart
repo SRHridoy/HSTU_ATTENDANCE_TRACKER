@@ -46,6 +46,15 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.purple],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         actions: [PopupMenu.showPopup(context)],
       ),
       body: courses.isNotEmpty
@@ -87,13 +96,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.blueAccent, Colors.purpleAccent],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                       border: Border(
                         bottom: BorderSide(
                           color: Colors.grey.shade300,
                           width: 1,
                         ),
                       ),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
@@ -104,20 +118,27 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     child: ListTile(
-                      leading: Text(
-                          '${courses[index][CourseDBHelper.COLUMN_COURSE_SNO]}'),
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Text(
+                          '${courses[index][CourseDBHelper.COLUMN_COURSE_SNO]}',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.black),
+                        ),
+                      ),
                       title: Text(
                         '📌${courses[index][CourseDBHelper.COLUMN_COUSE_NAME]}  \n${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
                         style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
                       subtitle: Text(
                         '${courses[index][CourseDBHelper.COLUMN_BATCH_NAME]}  |  ${courses[index][CourseDBHelper.COLUMN_SESSION]}',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
-                          color: Colors.grey.shade700,
+                          color: Colors.white70,
                         ),
                       ),
                       onLongPress: () {
@@ -127,7 +148,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
                           return AttendanceScreen(
-                            tableName: '${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
+                            tableName:
+                                '${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
                           );
                         }));
                       },
@@ -141,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           showCourseDialog();
         },
-        backgroundColor: CustomColors.primaryColor,
+        backgroundColor: Colors.blueAccent,
         child: Icon(Icons.add, color: Colors.white),
       ),
     );
