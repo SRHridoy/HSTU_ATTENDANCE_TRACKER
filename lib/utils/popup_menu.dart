@@ -20,7 +20,7 @@ class PopupMenu {
               ),
               SizedBox(width: 10),
               Text(
-                "Import excle",
+                "Import excel",
                 style: TextStyle(
                     color: CustomColors.primaryTextColor,
                     fontWeight: FontWeight.bold),
@@ -53,7 +53,8 @@ class PopupMenu {
       // Handling item selection
       onSelected: (value) {
         if (value == 1) {
-          AddExcelFileScreen(); // Call a method for Import CSV
+          /// Corrected by Dev-Hridoy...
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AddExcelFileScreen()));// Call a method for Import CSV
         } else if (value == 2) {
           _showAboutDialog(context); // Call a method for About
         }
