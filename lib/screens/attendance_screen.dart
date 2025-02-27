@@ -17,10 +17,16 @@ class _StudentListScreenState extends State<StudentListScreen> {
   Map<String, String> attendanceStatus = {}; // Store student_id -> ✅/❌ mapping
 
   @override
-  Future<void> initState() async {
+  void initState() {
     super.initState();
+    _initializeData(); // Call async method without awaiting it
+  }
+
+  void _initializeData() async {
     await DatabaseHelper().addNewDateColumn(widget.tableName, selectedDate);
-    _studentsFuture = _loadStudents(); // Initialize properly
+    setState(() {
+      _studentsFuture = _loadStudents();
+    });
   }
 
   Future<List<Map<String, dynamic>>> _loadStudents() async {
@@ -29,9 +35,10 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
     setState(() {
       // Update attendanceStatus based on the local database
-    for (var student in students) {
-      attendanceStatus[student['student_id'].toString()] = student[selectedDate] == "✅" ? "✅" : "❌";
-    }
+      for (var student in students) {
+        attendanceStatus[student['student_id'].toString()] =
+            student[selectedDate] == "✅" ? "✅" : "❌";
+      }
     });
 
     return students;
@@ -57,6 +64,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
     if (pickedDate != null) {
       setState(() {
         selectedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+        _initializeData(); // Refresh data when date changes
       });
     }
   }
@@ -101,7 +109,8 @@ class _StudentListScreenState extends State<StudentListScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: GestureDetector(
-                    onTap: () => _updateAttendance(student['student_id'].toString()),
+                    onTap: () =>
+                        _updateAttendance(student['student_id'].toString()),
                     child: ListTile(
                       contentPadding: EdgeInsets.all(16),
                       leading: CircleAvatar(
@@ -116,19 +125,20 @@ class _StudentListScreenState extends State<StudentListScreen> {
                       ),
                       title: Text(
                         "${student['student_id'].toString()} - ${student['name']}",
-                        style:
-                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
                           "Dept: ${student['dept']} | Session: ${student['session']}"),
                       trailing: Text(
-                          attendanceStatus[student['student_id'].toString()] ?? "❌",
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
+                        attendanceStatus[student['student_id'].toString()] ??
+                            "❌",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
+                ),
               );
             },
           );

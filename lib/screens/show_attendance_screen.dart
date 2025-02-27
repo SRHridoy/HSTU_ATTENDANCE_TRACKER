@@ -27,7 +27,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       setState(() {
         _attendanceData = data;
         _dates = data.first.keys
-            .where((key) => key != 'id' && key != 'name')
+            .where((key) => key != 'student_id' && key != 'name' && key != 'created_at' && key != 'session' && key !='dept')
             .toList(); // Extract Date Columns
       });
     }
@@ -66,10 +66,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 ],
                 rows: _attendanceData.map((student) {
                   return DataRow(cells: [
-                    DataCell(Text(student['id'].toString())),
+                    DataCell(Text(student['student_id'].toString())),
                     DataCell(Text(student['name'])),
                     ..._dates
-                        .map((date) => DataCell(Text(student[date] ?? ''))),
+                        .map((date) => DataCell(Text(student[date].toString()))),
                   ]);
                 }).toList(),
               ),
