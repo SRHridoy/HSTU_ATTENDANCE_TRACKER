@@ -68,12 +68,24 @@ class _StudentListScreenState extends State<StudentListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Take Attendance"),
+        title: Text("Take Attendance $selectedDate", style: TextStyle(color: Colors.white)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         centerTitle: true,
-        backgroundColor: Colors.blueAccent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.purple],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.calendar_today),
+            icon: Icon(Icons.calendar_today, color: Colors.white),
             onPressed: () => _selectDate(context),
           ),
         ],
