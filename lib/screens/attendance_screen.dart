@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:hstu_attendance_tracker/services/db_services/students_db_helper.dart';
 
 class StudentListScreen extends StatefulWidget {
@@ -11,20 +12,68 @@ class StudentListScreen extends StatefulWidget {
 
 class _StudentListScreenState extends State<StudentListScreen> {
   late Future<List<Map<String, dynamic>>> _studentsFuture;
+  String selectedDate =
+      DateFormat('yyyy-MM-dd').format(DateTime.now()); // Default to today
+  Map<String, String> attendanceStatus = {}; // Store student_id -> ✅/❌ mapping
 
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
-    _studentsFuture = DatabaseHelper().fetchLocalStudents(widget.tableName);
+    await DatabaseHelper().addNewDateColumn(widget.tableName, selectedDate);
+    _studentsFuture = _loadStudents(); // Initialize properly
+  }
+
+  Future<List<Map<String, dynamic>>> _loadStudents() async {
+    final students =
+        await DatabaseHelper().fetchLocalStudents(widget.tableName);
+
+    setState(() {
+      // Update attendanceStatus based on the local database
+    for (var student in students) {
+      attendanceStatus[student['student_id'].toString()] = student[selectedDate] == "✅" ? "✅" : "❌";
+    }
+    });
+
+    return students;
+  }
+
+  Future<void> _updateAttendance(String studentId) async {
+    String newStatus = attendanceStatus[studentId] == "✅" ? "❌" : "✅";
+    setState(() {
+      attendanceStatus[studentId] = newStatus;
+    });
+
+    await DatabaseHelper().updateAttendance(
+        widget.tableName, studentId.toString(), selectedDate, newStatus);
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    );
+    if (pickedDate != null) {
+      setState(() {
+        selectedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Student List"),
+        title: Text("Take Attendance"),
         centerTitle: true,
         backgroundColor: Colors.blueAccent,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.calendar_today),
+            onPressed: () => _selectDate(context),
+          ),
+        ],
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _studentsFuture,
@@ -44,28 +93,42 @@ class _StudentListScreenState extends State<StudentListScreen> {
             itemBuilder: (context, index) {
               final student = students[index];
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 child: Card(
                   elevation: 4,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.all(16),
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.blueAccent,
-                      child: Text(
-                        student['name'][0],
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                  child: GestureDetector(
+                    onTap: () => _updateAttendance(student['student_id'].toString()),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.all(16),
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.blueAccent,
+                        child: Text(
+                          student['name'][0],
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                      title: Text(
+                        "${student['student_id'].toString()} - ${student['name']}",
+                        style:
+                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                          "Dept: ${student['dept']} | Session: ${student['session']}"),
+                      trailing: Text(
+                          attendanceStatus[student['student_id'].toString()] ?? "❌",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                    title: Text(
-                      "${student['student_id']} - ${student['name']}",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text("Dept: ${student['dept']} | Session: ${student['session']}"),
                   ),
-                ),
               );
             },
           );

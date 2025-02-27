@@ -127,8 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
                           return StudentListScreen(
-                              tableName: courses[index]
-                                  [CourseDBHelper.COLUMN_COUSE_CODE]);
+                            tableName: '${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
+                          );
                         }));
                       },
                     ),
