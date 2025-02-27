@@ -16,7 +16,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    _initState();
+  }
+
+  void _initState() async {
+    setState(() {
+      _fetchData();
+    });
   }
 
   Future<void> _fetchData() async {
@@ -27,15 +33,28 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       setState(() {
         _attendanceData = data;
         _dates = data.first.keys
-            .where((key) => key != 'student_id' && key != 'name' && key != 'created_at' && key != 'session' && key !='dept')
+            .where((key) =>
+                key != 'student_id' &&
+                key != 'name' &&
+                key != 'created_at' &&
+                key != 'session' &&
+                key != 'dept')
             .toList(); // Extract Date Columns
       });
     }
   }
-  void _navigateToStudentListScreen() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return StudentListScreen(tableName: widget.tableName,);
-    }));
+
+  void _navigateToStudentListScreen() async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => StudentListScreen(tableName: widget.tableName),
+        ));
+
+    if (result == true) {
+      // If update happened, refresh the page
+      _fetchData();
+    }
   }
 
   @override
@@ -50,7 +69,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.list),
-            onPressed:_navigateToStudentListScreen,
+            onPressed: _navigateToStudentListScreen,
           ),
         ],
       ),
@@ -58,20 +77,23 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: [
-                  DataColumn(label: Text('ID')),
-                  DataColumn(label: Text('Name')),
-                  ..._dates.map((date) => DataColumn(label: Text(date))),
-                ],
-                rows: _attendanceData.map((student) {
-                  return DataRow(cells: [
-                    DataCell(Text(student['student_id'].toString())),
-                    DataCell(Text(student['name'])),
-                    ..._dates
-                        .map((date) => DataCell(Text(student[date].toString()))),
-                  ]);
-                }).toList(),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical, // Enables vertical scrolling0
+                child: DataTable(
+                  columns: [
+                    DataColumn(label: Text('ID')),
+                    DataColumn(label: Text('Name')),
+                    ..._dates.map((date) => DataColumn(label: Text(date))),
+                  ],
+                  rows: _attendanceData.map((student) {
+                    return DataRow(cells: [
+                      DataCell(Text(student['student_id'].toString())),
+                      DataCell(Text(student['name'])),
+                      ..._dates.map(
+                          (date) => DataCell(Text(student[date].toString()))),
+                    ]);
+                  }).toList(),
+                ),
               ),
             ),
     );

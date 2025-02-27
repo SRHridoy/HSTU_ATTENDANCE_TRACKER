@@ -12,35 +12,30 @@ class StudentListScreen extends StatefulWidget {
 
 class _StudentListScreenState extends State<StudentListScreen> {
   late Future<List<Map<String, dynamic>>> _studentsFuture;
-  String selectedDate =
-      DateFormat('yyyy-MM-dd').format(DateTime.now()); // Default to today
-  Map<String, String> attendanceStatus = {}; // Store student_id -> ✅/❌ mapping
+  String selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  Map<String, String> attendanceStatus = {}; 
 
   @override
   void initState() {
     super.initState();
-    _initializeData(); // Call async method without awaiting it
+     _studentsFuture = _loadStudents(); // Ensure it's initialized immediately
+    _initializeData();
   }
 
-  void _initializeData() async {
-    await DatabaseHelper().addNewDateColumn(widget.tableName, selectedDate);
-    setState(() {
-      _studentsFuture = _loadStudents();
+  void _initializeData() {
+    DatabaseHelper().addNewDateColumn(widget.tableName, selectedDate).then((_) {
+      setState(() {
+        _studentsFuture = _loadStudents();
+      });
     });
   }
 
   Future<List<Map<String, dynamic>>> _loadStudents() async {
-    final students =
-        await DatabaseHelper().fetchLocalStudents(widget.tableName);
-
-    setState(() {
-      // Update attendanceStatus based on the local database
-      for (var student in students) {
-        attendanceStatus[student['student_id'].toString()] =
-            student[selectedDate] == "✅" ? "✅" : "❌";
-      }
-    });
-
+    final students = await DatabaseHelper().fetchLocalStudents(widget.tableName);
+    attendanceStatus = {
+      for (var student in students)
+        student['student_id'].toString(): student[selectedDate] == "✅" ? "✅" : "❌"
+    };
     return students;
   }
 
@@ -64,7 +59,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
     if (pickedDate != null) {
       setState(() {
         selectedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-        _initializeData(); // Refresh data when date changes
+        _studentsFuture = _loadStudents(); // Ensure UI updates immediately
       });
     }
   }
@@ -101,16 +96,14 @@ class _StudentListScreenState extends State<StudentListScreen> {
             itemBuilder: (context, index) {
               final student = students[index];
               return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 child: Card(
                   elevation: 4,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: GestureDetector(
-                    onTap: () =>
-                        _updateAttendance(student['student_id'].toString()),
+                    onTap: () => _updateAttendance(student['student_id'].toString()),
                     child: ListTile(
                       contentPadding: EdgeInsets.all(16),
                       leading: CircleAvatar(
@@ -128,13 +121,10 @@ class _StudentListScreenState extends State<StudentListScreen> {
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      subtitle: Text(
-                          "Dept: ${student['dept']} | Session: ${student['session']}"),
+                      subtitle: Text("Dept: ${student['dept']} | Session: ${student['session']}"),
                       trailing: Text(
-                        attendanceStatus[student['student_id'].toString()] ??
-                            "❌",
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
+                        attendanceStatus[student['student_id'].toString()] ?? "❌",
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
