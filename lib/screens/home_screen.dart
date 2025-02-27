@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hstu_attendance_tracker/screens/show_attendance_screen.dart';
 import 'package:hstu_attendance_tracker/services/caching/supabase_to_sqflite.dart';
 import 'package:hstu_attendance_tracker/services/db_services/course_db_helper.dart';
+import 'package:hstu_attendance_tracker/services/db_services/students_db_helper.dart';
 import 'package:hstu_attendance_tracker/utils/custom_colors.dart';
 
 import '../utils/popup_menu.dart';
@@ -78,6 +79,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       SlidableAction(
                         onPressed: (context) async {
+                          DatabaseHelper db = DatabaseHelper();
+                          await db.deleteTable(
+                              courses[index][CourseDBHelper.COLUMN_COUSE_CODE]);
                           bool check = await dbRef.deleteCourse(
                               sno: courses[index]
                                   [CourseDBHelper.COLUMN_COURSE_SNO]);
@@ -195,6 +199,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: Text('Delete Course'),
                 onTap: () async {
                   Navigator.pop(context);
+                  DatabaseHelper db = DatabaseHelper();
+                  await db.deleteTable(
+                      courses[index][CourseDBHelper.COLUMN_COUSE_CODE]);
                   bool check = await dbRef.deleteCourse(
                       sno: courses[index][CourseDBHelper.COLUMN_COURSE_SNO]);
                   if (check) {

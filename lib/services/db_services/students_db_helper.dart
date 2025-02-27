@@ -97,10 +97,22 @@ class DatabaseHelper {
   }
 
   // ✅ Delete the database (For debugging only)
-  Future<void> deleteDatabaseFile() async {
+  Future<void> deleteTable(String tableName) async {
+    // Get the database path
     String path = join(await getDatabasesPath(), 'students.db');
-    await deleteDatabase(path);
-    if (kDebugMode) print("⚠️ Database deleted!");
+
+    // Open the database
+    Database db = await openDatabase(path);
+
+    // Execute the SQL query to drop the table
+    await db.execute('DROP TABLE IF EXISTS $tableName');
+
+    // Close the database
+    await db.close();
+
+    if (kDebugMode) {
+      print("⚠️ Table '$tableName' deleted!");
+    }
   }
 
   Future<List<Map<String, dynamic>>> fetchLocalData(String tableName) async {
@@ -108,6 +120,7 @@ class DatabaseHelper {
     final students = await dbHelper.fetchLocalStudents(tableName);
     return students;
   }
+
   // Add new Column to take attendance for specific class
   Future<void> addNewDateColumn(String tableName, String date) async {
     final db = await database;
@@ -138,10 +151,11 @@ class DatabaseHelper {
   }
 
   // Update Attendance status for a specific student on a specific date
-  Future<void> updateAttendance(String tableName, String studentId,
-      String date, String status) async {
+  Future<void> updateAttendance(
+      String tableName, String studentId, String date, String status) async {
     final db = await database;
-    await createTableIfNotExists(tableName); // Ensure the table exists before querying
+    await createTableIfNotExists(
+        tableName); // Ensure the table exists before querying
 
     // Jodi column na thake, tahole add kore nibe
     String columnName = '"$date"'; // Ensuring correct SQL syntax
