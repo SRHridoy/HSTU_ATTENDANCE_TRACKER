@@ -114,46 +114,51 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       scrollDirection: Axis.horizontal,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
-                        child: DataTable(
-                          headingRowColor: MaterialStateProperty.all(
-                              Colors.blueAccent.shade100),
-                          dataRowColor: MaterialStateProperty.all(Colors.white),
-                          border: TableBorder.all(color: Colors.blueAccent),
-                          columns: [
-                            DataColumn(
-                                label: Text('ID',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Name',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                            ..._dates.map((date) => DataColumn(
-                                label: Text(date,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)))),
-                          ],
-                          rows: _attendanceData.map((student) {
-                            return DataRow(cells: [
-                              DataCell(Text(student['student_id'].toString())),
-                              DataCell(
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(maxWidth: 150),
-                                  child: Text(student['name'],
-                                      overflow: TextOverflow.ellipsis),
-                                ),
-                              ),
-                              ..._dates.map((date) {
-                                final attendance = student[date]?.toString() ?? 'N/A';
-                                return DataCell(
-                                  Container(
-                                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                                    child: Text(attendance),
+                        child: Column(
+                          children: [
+                            DataTable(
+                              headingRowColor: MaterialStateProperty.all(
+                                  Colors.blueAccent.shade100),
+                              dataRowColor: MaterialStateProperty.all(Colors.white),
+                              border: TableBorder.all(color: Colors.blueAccent),
+                              columns: [
+                                DataColumn(
+                                    label: Text('ID',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold))),
+                                DataColumn(
+                                    label: Text('Name',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold))),
+                                ..._dates.map((date) => DataColumn(
+                                    label: Text(date,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)))),
+                              ],
+                              rows: _attendanceData.map((student) {
+                                return DataRow(cells: [
+                                  DataCell(Text(student['student_id'].toString())),
+                                  DataCell(
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(maxWidth: 150),
+                                      child: Text(student['name'],
+                                          overflow: TextOverflow.ellipsis),
+                                    ),
                                   ),
-                                );
+                                  ..._dates.map((date) {
+                                    final attendance = student[date]?.toString() ?? 'N/A';
+                                    return DataCell(
+                                      Container(
+                                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                                        child: Text(attendance),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ]);
                               }).toList(),
-                            ]);
-                          }).toList(),
+                            ),
+                            SizedBox(height: 100), // Adds space below the table
+                          ],
                         ),
                       ),
                     ),
