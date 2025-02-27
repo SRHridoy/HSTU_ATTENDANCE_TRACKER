@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hstu_attendance_tracker/screens/attendance_screen.dart';
+import 'package:hstu_attendance_tracker/screens/show_attendance_screen.dart';
 import 'package:hstu_attendance_tracker/services/caching/supabase_to_sqflite.dart';
 import 'package:hstu_attendance_tracker/services/db_services/course_db_helper.dart';
 import 'package:hstu_attendance_tracker/utils/custom_colors.dart';
@@ -126,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return StudentListScreen(
+                          return AttendanceScreen(
                             tableName: '${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
                           );
                         }));
