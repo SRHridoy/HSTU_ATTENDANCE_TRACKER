@@ -84,6 +84,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         ),
         actions: [
           IconButton(
+            icon: Icon(Icons.refresh, color: Colors.white),
+            onPressed: _fetchData, // Refresh attendance data
+          ),
+          IconButton(
             icon: Icon(Icons.list, color: Colors.white),
             onPressed: _navigateToStudentListScreen,
           ),
@@ -103,19 +107,31 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           _isLoading
               ? Center(child: CircularProgressIndicator())
               : _attendanceData.isEmpty
-                  ? Center(child: Text('No data available', style: TextStyle(fontSize: 18)))
+                  ? Center(
+                      child: Text('No data available',
+                          style: TextStyle(fontSize: 18)))
                   : SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
                         child: DataTable(
-                          headingRowColor: MaterialStateProperty.all(Colors.blueAccent.shade100),
+                          headingRowColor: MaterialStateProperty.all(
+                              Colors.blueAccent.shade100),
                           dataRowColor: MaterialStateProperty.all(Colors.white),
                           border: TableBorder.all(color: Colors.blueAccent),
                           columns: [
-                            DataColumn(label: Text('ID', style: TextStyle(fontWeight: FontWeight.bold))),
-                            DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold))),
-                            ..._dates.map((date) => DataColumn(label: Text(date, style: TextStyle(fontWeight: FontWeight.bold)))),
+                            DataColumn(
+                                label: Text('ID',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Name',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            ..._dates.map((date) => DataColumn(
+                                label: Text(date,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)))),
                           ],
                           rows: _attendanceData.map((student) {
                             return DataRow(cells: [
@@ -123,10 +139,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               DataCell(
                                 ConstrainedBox(
                                   constraints: BoxConstraints(maxWidth: 100),
-                                  child: Text(student['name'], overflow: TextOverflow.ellipsis),
+                                  child: Text(student['name'],
+                                      overflow: TextOverflow.ellipsis),
                                 ),
                               ),
-                              ..._dates.map((date) => DataCell(Text(student[date].toString()))),
+                              ..._dates.map((date) =>
+                                  DataCell(Text(student[date].toString()))),
                             ]);
                           }).toList(),
                         ),
@@ -148,7 +166,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               ),
               child: Text(
                 'Take Attendance',
-                style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
               ),
             ),
           ),

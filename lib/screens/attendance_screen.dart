@@ -12,7 +12,7 @@ class StudentListScreen extends StatefulWidget {
 
 class _StudentListScreenState extends State<StudentListScreen> {
   late Future<List<Map<String, dynamic>>> _studentsFuture;
-  String selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String selectedDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
   Map<String, String> attendanceStatus = {};
 
   @override
