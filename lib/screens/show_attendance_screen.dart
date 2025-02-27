@@ -138,13 +138,20 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               DataCell(Text(student['student_id'].toString())),
                               DataCell(
                                 ConstrainedBox(
-                                  constraints: BoxConstraints(maxWidth: 100),
+                                  constraints: BoxConstraints(maxWidth: 150),
                                   child: Text(student['name'],
                                       overflow: TextOverflow.ellipsis),
                                 ),
                               ),
-                              ..._dates.map((date) =>
-                                  DataCell(Text(student[date].toString()))),
+                              ..._dates.map((date) {
+                                final attendance = student[date]?.toString() ?? 'N/A';
+                                return DataCell(
+                                  Container(
+                                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                                    child: Text(attendance),
+                                  ),
+                                );
+                              }).toList(),
                             ]);
                           }).toList(),
                         ),
