@@ -50,7 +50,8 @@ class _AddExcelFileScreenState extends State<AddExcelFileScreen> {
 
     for (var student in studentList) {
       if (kDebugMode) {
-        print(student);
+        print(student['student_id']);
+        print(student['name']);
       }
     }
   }
