@@ -124,17 +124,7 @@ class PopupMenu {
                   fontSize: 16,
                   color: Colors.black87),
             ),
-            Text(
-              "Md. Arshad Ali",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "Professor, Dept. of C.S.E., HSTU, Dinajpur",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.black87),
-            ),
+            _buildContributor("Md. Arshad Ali", "Professor, Dept. of C.S.E., HSTU, Dinajpur",),
           ],
         ),
         actions: [
