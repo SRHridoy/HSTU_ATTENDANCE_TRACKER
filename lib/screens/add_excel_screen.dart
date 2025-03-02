@@ -5,6 +5,7 @@ import 'package:hstu_attendance_tracker/services/db_services/students_db_helper.
 import 'package:hstu_attendance_tracker/services/excel_services/excel_reader.dart';
 import 'package:hstu_attendance_tracker/services/excel_services/excle_service.dart';
 import 'package:hstu_attendance_tracker/services/supabase/supabase_services.dart';
+import 'package:hstu_attendance_tracker/utils/custom_colors.dart';
 
 class AddExcelFileScreen extends StatefulWidget {
   const AddExcelFileScreen({super.key});
@@ -63,26 +64,44 @@ class _AddExcelFileScreenState extends State<AddExcelFileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Upload Excel File")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: handleFileUpload,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      appBar: AppBar(
+        title: Text("Upload Excel File",style: TextStyle(
+          color: Colors.white,
+        ),),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.purple],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+      ),
+      body: Container(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: handleFileUpload,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  textStyle:
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                child: Text("Upload Excel File",style: TextStyle(
+          color: Colors.white,
+        ),),
               ),
-              child: Text("Upload Excel File"),
-            ),
-            SizedBox(height: 20),
-            Text(
-              statusMessage,
-              style: TextStyle(fontSize: 16, color: Colors.black54),
-            ),
-          ],
+              SizedBox(height: 20),
+              Text(
+                statusMessage,
+                style: TextStyle(fontSize: 16, color: Colors.black54),
+              ),
+            ],
+          ),
         ),
       ),
     );

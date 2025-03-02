@@ -43,14 +43,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+         decoration: BoxDecoration(
           gradient: LinearGradient(
+            colors: [CustomColors.primaryColor, Colors.deepPurpleAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              CustomColors.secondaryColor,
-              CustomColors.secondaryColor.withOpacity(0.85),
-            ],
           ),
         ),
         child: SafeArea(
@@ -64,8 +61,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
                 // App Logo
                 AspectRatio(
-                  aspectRatio: 1.6,
-                  child: Image.asset('assets/images/app_login.png'),
+                  aspectRatio: 1.5,
+                  child: Image.asset('assets/images/app_logo_white.png'),
                 ),
                 Gap(screenHeight * 0.03),
 

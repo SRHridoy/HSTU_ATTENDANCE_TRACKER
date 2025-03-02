@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hstu_attendance_tracker/screens/show_attendance_screen.dart';
+import 'package:hstu_attendance_tracker/screens/attendance_screen.dart';
 import 'package:hstu_attendance_tracker/services/caching/supabase_to_sqflite.dart';
 import 'package:hstu_attendance_tracker/services/db_services/course_db_helper.dart';
 import 'package:hstu_attendance_tracker/services/db_services/students_db_helper.dart';
@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: CustomColors.primaryColor,
         title: Text(
-          'HSTU Attendance Tracker',
+          'Teacher Assitant',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -249,14 +249,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     'CSE',
                     'EEE',
                     'ECE',
-                    'Math',
-                    'English',
-                    'Architecture',
-                    'Physics',
-                    'Chemistry',
-                    'Statistics',
-                    'Agriculture',
-                    'DVM'
+                    // 'Math',
+                    // 'English',
+                    // 'Architecture',
+                    // 'Physics',
+                    // 'Chemistry',
+                    // 'Statistics',
+                    // 'Agriculture',
+                    // 'DVM'
                   ]
                       .map((batch) => DropdownMenuItem(
                             value: batch,
