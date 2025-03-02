@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:hstu_attendance_tracker/services/caching/supabase_to_sqflite.dart';
 import 'package:hstu_attendance_tracker/services/db_services/students_db_helper.dart';
 import 'package:hstu_attendance_tracker/services/excel_services/excel_reader.dart';
 import 'package:hstu_attendance_tracker/services/excel_services/excle_service.dart';
 import 'package:hstu_attendance_tracker/services/supabase/supabase_services.dart';
-import 'package:hstu_attendance_tracker/utils/custom_colors.dart';
 
 class AddExcelFileScreen extends StatefulWidget {
   const AddExcelFileScreen({super.key});
@@ -65,9 +65,14 @@ class _AddExcelFileScreenState extends State<AddExcelFileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Upload Excel File",style: TextStyle(
-          color: Colors.white,
-        ),),
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Upload Excel File",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -83,6 +88,16 @@ class _AddExcelFileScreenState extends State<AddExcelFileScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Image.asset(
+                "assets/images/demo_excel_img.png",
+                width: MediaQuery.of(context).size.width * 0.9,
+              ),
+              Gap(50),
+              Text(
+                "Please maintain the format as demonstrated in the image above.",
+                textAlign: TextAlign.center,
+              ),
+              Gap(50),
               ElevatedButton(
                 onPressed: handleFileUpload,
                 style: ElevatedButton.styleFrom(
@@ -91,15 +106,20 @@ class _AddExcelFileScreenState extends State<AddExcelFileScreen> {
                   textStyle:
                       TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                child: Text("Upload Excel File",style: TextStyle(
-          color: Colors.white,
-        ),),
+                child: Text(
+                  "Upload Excel File",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
               ),
               SizedBox(height: 20),
               Text(
                 statusMessage,
                 style: TextStyle(fontSize: 16, color: Colors.black54),
               ),
+
+              Gap(200),
             ],
           ),
         ),

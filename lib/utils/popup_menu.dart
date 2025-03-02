@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hstu_attendance_tracker/screens/add_excel_screen.dart';
 import 'package:hstu_attendance_tracker/utils/custom_colors.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class PopupMenu {
   static Widget showPopup(BuildContext context) {
+
     return PopupMenuButton<int>(
       icon: Icon(
         Icons.more_vert,
@@ -29,6 +31,24 @@ class PopupMenu {
         ),
         PopupMenuItem(
           value: 2,
+          child: Row(
+            children: [
+              Icon(Icons.notifications_paused_outlined,
+                  color: Colors.deepOrange),
+              SizedBox(width: 12),
+              Text(
+                "Notice Board",
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 3,
           child: Row(
             children: [
               Icon(Icons.info, color: Colors.green),
@@ -58,6 +78,7 @@ class PopupMenu {
             MaterialPageRoute(builder: (context) => AddExcelFileScreen()),
           );
         } else if (value == 2) {
+        // Navigator.push(context, MaterialPageRoute(builder:));
           _showAboutDialog(context);
         }
       },
@@ -100,7 +121,9 @@ class PopupMenu {
             Text(
               "Under the supervision of:",
               style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.black87),
             ),
             Text(
               "Md. Arshad Ali\nProfessor, Dept. of C.S.E., HSTU, Dinajpur",
@@ -138,7 +161,9 @@ class PopupMenu {
           Text(
             name,
             style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Colors.black87),
           ),
           Text(
             id,

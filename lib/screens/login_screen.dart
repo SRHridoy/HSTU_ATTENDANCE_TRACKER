@@ -12,7 +12,8 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen>
+    with TickerProviderStateMixin {
   final AuthService authService = AuthService();
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -43,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
     return Scaffold(
       body: Container(
-         decoration: BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [CustomColors.primaryColor, Colors.deepPurpleAccent],
             begin: Alignment.topCenter,
@@ -118,21 +119,25 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                       backgroundColor: Colors.white,
                       elevation: 6,
                       shadowColor: Colors.black.withOpacity(0.3),
-                      side: BorderSide(color: CustomColors.primaryColor, width: 2),
+                      side: BorderSide(
+                          color: CustomColors.primaryColor, width: 2),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(40),
                       ),
                       padding: EdgeInsets.symmetric(vertical: 14),
                     ),
                     onPressed: () async {
-                      bool isAuthenticated = await authService.authenticateWithBiometrics();
+                      bool isAuthenticated =
+                          await authService.authenticateWithBiometrics();
                       if (isAuthenticated) {
                         HapticFeedback.lightImpact(); // ✅ Haptic feedback
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           backgroundColor: Colors.green.shade600,
                           content: Text(
                             '🎉 Login Successful!',
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
                           duration: Duration(seconds: 2),
                         ));
@@ -141,13 +146,15 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                           PageRouteBuilder(
                             pageBuilder: (_, __, ___) => HomeScreen(),
                             transitionsBuilder: (_, animation, __, child) {
-                              return FadeTransition(opacity: animation, child: child);
+                              return FadeTransition(
+                                  opacity: animation, child: child);
                             },
                             transitionDuration: Duration(milliseconds: 800),
                           ),
                         );
                       } else {
-                        HapticFeedback.vibrate(); // ❌ Haptic feedback on failure
+                        HapticFeedback
+                            .vibrate(); // ❌ Haptic feedback on failure
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text(
                             '❌ Fingerprint Authentication Failed.',

@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: CustomColors.primaryColor,
         title: Text(
-          'Teacher Assitant',
+          'Teacher Assistant',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
