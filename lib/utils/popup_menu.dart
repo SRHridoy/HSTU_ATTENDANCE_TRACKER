@@ -125,7 +125,13 @@ class PopupMenu {
                   color: Colors.black87),
             ),
             Text(
-              "Md. Arshad Ali\nProfessor, Dept. of C.S.E., HSTU, Dinajpur",
+              "Md. Arshad Ali",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              "Professor, Dept. of C.S.E., HSTU, Dinajpur",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
