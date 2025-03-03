@@ -15,7 +15,7 @@ class CourseDBHelper {
   static final String COLUMN_COURSE_SNO = 'course_sno';
   static final String COLUMN_COUSE_CODE = 'course_code';
   static final String COLUMN_COUSE_NAME = 'course_name';
-  static final String COLUMN_BATCH_NAME = 'batch_no';
+  static final String COLUMN_BATCH_NAME = 'batch_name';
   static final String COLUMN_SESSION = 'session';
   static final String COLUMN_CREDIT = "credit";
 
@@ -46,11 +46,12 @@ class CourseDBHelper {
 
   Future<bool> addCourse(
       {required String courseCode,
-      required String courseName,
-      required String batchName,
-      required String session,
-      required String credit
-      }) async {
+        required String courseName,
+        required String batchName,
+        required String session,
+        required String credit
+      }) async{
+
     var db = await getDB();
 
     int rowsEffected = await db.insert(TABLE_COURSE, {
@@ -73,11 +74,11 @@ class CourseDBHelper {
 
   Future<bool> updateCourse(
       {required String courseCode,
-      required String courseName,
-      required String batchName,
-      required String session,
-      required String credit,
-      required int sno}) async {
+        required String courseName,
+        required String batchName,
+        required String session,
+        required String credit,
+        required int sno}) async {
     var db = await getDB();
 
     int rowsEffected = await db.update(

@@ -60,108 +60,108 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: courses.isNotEmpty
           ? ListView.builder(
-              itemCount: courses.length,
-              itemBuilder: (context, index) {
-                return Slidable(
-                  key: ValueKey(
-                      courses[index][CourseDBHelper.COLUMN_COURSE_SNO]),
-                  startActionPane: ActionPane(
-                    motion: const DrawerMotion(),
-                    children: [
-                      SlidableAction(
-                        onPressed: (context) {
-                          showCourseDialog(course: courses[index]);
-                        },
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        icon: Icons.edit,
-                        label: 'Edit',
-                      ),
-                      SlidableAction(
-                        onPressed: (context) async {
-                          DatabaseHelper db = DatabaseHelper();
-                          await db.deleteTable(
-                              courses[index][CourseDBHelper.COLUMN_COUSE_CODE]);
-                          bool check = await dbRef.deleteCourse(
-                              sno: courses[index]
-                                  [CourseDBHelper.COLUMN_COURSE_SNO]);
-                          if (check) {
-                            getCourses();
-                          }
-                        },
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        icon: Icons.delete,
-                        label: 'Delete',
-                      ),
-                    ],
+        itemCount: courses.length,
+        itemBuilder: (context, index) {
+          return Slidable(
+            key: ValueKey(
+                courses[index][CourseDBHelper.COLUMN_COURSE_SNO]),
+            startActionPane: ActionPane(
+              motion: const DrawerMotion(),
+              children: [
+                SlidableAction(
+                  onPressed: (context) {
+                    showCourseDialog(course: courses[index]);
+                  },
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  icon: Icons.edit,
+                  label: 'Edit',
+                ),
+                SlidableAction(
+                  onPressed: (context) async {
+                    DatabaseHelper db = DatabaseHelper();
+                    await db.deleteTable(
+                        courses[index][CourseDBHelper.COLUMN_COUSE_CODE]);
+                    bool check = await dbRef.deleteCourse(
+                        sno: courses[index]
+                        [CourseDBHelper.COLUMN_COURSE_SNO]);
+                    if (check) {
+                      getCourses();
+                    }
+                  },
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  icon: Icons.delete,
+                  label: 'Delete',
+                ),
+              ],
+            ),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blueAccent, Colors.purpleAccent],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.grey.shade300,
+                    width: 1,
                   ),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.blueAccent, Colors.purpleAccent],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.grey.shade300,
-                          width: 1,
-                        ),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.shade300,
-                          blurRadius: 5,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Text(
-                          '${courses[index][CourseDBHelper.COLUMN_COURSE_SNO]}',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.black),
-                        ),
-                      ),
-                      title: Text(
-                        '📌${courses[index][CourseDBHelper.COLUMN_COUSE_NAME]}  \n${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '${courses[index][CourseDBHelper.COLUMN_BATCH_NAME]}  |  ${courses[index][CourseDBHelper.COLUMN_SESSION]}',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: Colors.white70,
-                        ),
-                      ),
-                      onLongPress: () {
-                        _showOptionsDialog(context, index);
-                      },
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return AttendanceScreen(
-                            tableName:
-                                '${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
-                          );
-                        }));
-                      },
-                    ),
+                ),
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade300,
+                    blurRadius: 5,
+                    spreadRadius: 2,
                   ),
-                );
-              },
-            )
+                ],
+              ),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Text(
+                    '${courses[index][CourseDBHelper.COLUMN_COURSE_SNO]}',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                ),
+                title: Text(
+                  '📌${courses[index][CourseDBHelper.COLUMN_COUSE_NAME]}  \n${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                subtitle: Text(
+                  '${courses[index][CourseDBHelper.COLUMN_BATCH_NAME]}  |  ${courses[index][CourseDBHelper.COLUMN_SESSION]}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    color: Colors.white70,
+                  ),
+                ),
+                onLongPress: () {
+                  _showOptionsDialog(context, index);
+                },
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                        return AttendanceScreen(
+                          tableName:
+                          '${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
+                        );
+                      }));
+                },
+              ),
+            ),
+          );
+        },
+      )
           : Center(child: Text('No Courses Assigned yet!')),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -222,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String? selectedSession = course?[CourseDBHelper.COLUMN_SESSION];
     ///Dev khaled Create a Column named COLUMN_COURSE_CREDIT and then Uncomment the below line
     ///Resolved:SRHridoy
-   String? selectedCredit = course?[CourseDBHelper.COLUMN_CREDIT];
+    String? selectedCredit = course?[CourseDBHelper.COLUMN_CREDIT];
 
     courseCodeController.text = course?[CourseDBHelper.COLUMN_COUSE_CODE] ?? '';
     courseNameController.text = course?[CourseDBHelper.COLUMN_COUSE_NAME] ?? '';
@@ -249,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   decoration: InputDecoration(labelText: "Course Credit"),
                   ///Dev khaled Uncomment the below line after creating the column
                   ///Resolved : SRHridoy
-                  // value: selectedCredit,
+                  value: selectedCredit,
                   items: ['2', '3']
                       .map((credit) => DropdownMenuItem(
                     value: credit,
@@ -259,7 +259,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   onChanged: (value) {
                     setState(() {
                       ///Dev khaled Uncomment the below line after creating the column
-                      ///resolved
                       selectedCredit = value;
                     });
                   },
@@ -282,9 +281,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     // 'DVM'
                   ]
                       .map((batch) => DropdownMenuItem(
-                            value: batch,
-                            child: Text(batch),
-                          ))
+                    value: batch,
+                    child: Text(batch),
+                  ))
                       .toList(),
                   onChanged: (value) {
                     setState(() {
@@ -298,9 +297,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   value: selectedSession,
                   items: ['2020', '2021', '2022', '2023', '2024']
                       .map((session) => DropdownMenuItem(
-                            value: session,
-                            child: Text(session),
-                          ))
+                    value: session,
+                    child: Text(session),
+                  ))
                       .toList(),
                   onChanged: (value) {
                     setState(() {
@@ -322,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 ElevatedButton(
                   style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
                     if (courseCodeController.text.isNotEmpty &&
                         courseNameController.text.isNotEmpty &&
@@ -331,11 +330,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (course == null) {
                         /// Insert new course
                         bool inserted = await dbRef.addCourse(
-                          courseCode: courseCodeController.text,
-                          courseName: courseNameController.text,
-                          batchName: selectedBatch!,
-                          session: selectedSession!,
-                          credit: selectedCredit!
+                            courseCode: courseCodeController.text,
+                            courseName: courseNameController.text,
+                            batchName: selectedBatch!,
+                            session: selectedSession!,
+                            credit: selectedCredit!
                         );
                         // create new student table if not exists
                         final caching = Caching();
@@ -348,12 +347,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       } else {
                         /// Update existing course
                         bool updated = await dbRef.updateCourse(
-                          sno: course[CourseDBHelper.COLUMN_COURSE_SNO],
-                          courseCode: courseCodeController.text,
-                          courseName: courseNameController.text,
-                          batchName: selectedBatch!,
-                          session: selectedSession!,
-                          credit: selectedCredit!
+                            sno: course[CourseDBHelper.COLUMN_COURSE_SNO],
+                            courseCode: courseCodeController.text,
+                            courseName: courseNameController.text,
+                            batchName: selectedBatch!,
+                            session: selectedSession!,
+                            credit: selectedCredit!
                         );
                         if (updated) getCourses();
                       }
