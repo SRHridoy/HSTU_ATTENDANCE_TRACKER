@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hstu_attendance_tracker/screens/attendance_screen.dart';
 import 'package:hstu_attendance_tracker/services/caching/supabase_to_sqflite.dart';
 import 'package:hstu_attendance_tracker/services/db_services/course_db_helper.dart';
+import 'package:hstu_attendance_tracker/services/db_services/students_db_helper.dart';
 import 'package:hstu_attendance_tracker/utils/custom_colors.dart';
 
 import '../utils/popup_menu.dart';
@@ -42,10 +43,19 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: CustomColors.primaryColor,
         title: Text(
-          'HSTU Attendance Tracker',
+          'Teacher Assistant',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.purple],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         actions: [PopupMenu.showPopup(context)],
       ),
       body: courses.isNotEmpty
@@ -69,6 +79,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       SlidableAction(
                         onPressed: (context) async {
+                          DatabaseHelper db = DatabaseHelper();
+                          await db.deleteTable(
+                              courses[index][CourseDBHelper.COLUMN_COUSE_CODE]);
                           bool check = await dbRef.deleteCourse(
                               sno: courses[index]
                                   [CourseDBHelper.COLUMN_COURSE_SNO]);
@@ -87,13 +100,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.blueAccent, Colors.purpleAccent],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                       border: Border(
                         bottom: BorderSide(
                           color: Colors.grey.shade300,
                           width: 1,
                         ),
                       ),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
@@ -104,20 +122,27 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     child: ListTile(
-                      leading: Text(
-                          '${courses[index][CourseDBHelper.COLUMN_COURSE_SNO]}'),
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Text(
+                          '${courses[index][CourseDBHelper.COLUMN_COURSE_SNO]}',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.black),
+                        ),
+                      ),
                       title: Text(
                         '📌${courses[index][CourseDBHelper.COLUMN_COUSE_NAME]}  \n${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
                         style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
                       subtitle: Text(
                         '${courses[index][CourseDBHelper.COLUMN_BATCH_NAME]}  |  ${courses[index][CourseDBHelper.COLUMN_SESSION]}',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
-                          color: Colors.grey.shade700,
+                          color: Colors.white70,
                         ),
                       ),
                       onLongPress: () {
@@ -126,9 +151,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return StudentListScreen(
-                              tableName: courses[index]
-                                  [CourseDBHelper.COLUMN_COUSE_CODE]);
+                          return AttendanceScreen(
+                            tableName:
+                                '${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
+                          );
                         }));
                       },
                     ),
@@ -141,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           showCourseDialog();
         },
-        backgroundColor: CustomColors.primaryColor,
+        backgroundColor: Colors.blueAccent,
         child: Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -173,6 +199,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: Text('Delete Course'),
                 onTap: () async {
                   Navigator.pop(context);
+                  DatabaseHelper db = DatabaseHelper();
+                  await db.deleteTable(
+                      courses[index][CourseDBHelper.COLUMN_COUSE_CODE]);
                   bool check = await dbRef.deleteCourse(
                       sno: courses[index][CourseDBHelper.COLUMN_COURSE_SNO]);
                   if (check) {
@@ -220,14 +249,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     'CSE',
                     'EEE',
                     'ECE',
-                    'Math',
-                    'English',
-                    'Architecture',
-                    'Physics',
-                    'Chemistry',
-                    'Statistics',
-                    'Agriculture',
-                    'DVM'
+                    // 'Math',
+                    // 'English',
+                    // 'Architecture',
+                    // 'Physics',
+                    // 'Chemistry',
+                    // 'Statistics',
+                    // 'Agriculture',
+                    // 'DVM'
                   ]
                       .map((batch) => DropdownMenuItem(
                             value: batch,
