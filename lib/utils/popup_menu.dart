@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hstu_attendance_tracker/screens/add_excel_screen.dart';
 import 'package:hstu_attendance_tracker/utils/custom_colors.dart';
 
+import '../screens/notice_board_screen.dart';
+
 class PopupMenu {
   static Widget showPopup(BuildContext context) {
-
     return PopupMenuButton<int>(
       icon: Icon(
         Icons.more_vert,
@@ -70,6 +71,8 @@ class PopupMenu {
       ),
       color: Colors.white,
       elevation: 5,
+
+      /// Dev-Hridoy is  working on this...
       onSelected: (value) {
         if (value == 1) {
           Navigator.push(
@@ -77,7 +80,11 @@ class PopupMenu {
             MaterialPageRoute(builder: (context) => AddExcelFileScreen()),
           );
         } else if (value == 2) {
-        // Navigator.push(context, MaterialPageRoute(builder:));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NoticeBoardScreen()),
+          );
+        } else if (value == 3) {
           _showAboutDialog(context);
         }
       },
@@ -124,7 +131,10 @@ class PopupMenu {
                   fontSize: 16,
                   color: Colors.black87),
             ),
-            _buildContributor("Md. Arshad Ali", "Professor, Dept. of C.S.E., HSTU, Dinajpur",),
+            _buildContributor(
+              "Md. Arshad Ali",
+              "Professor, Dept. of C.S.E., HSTU, Dinajpur",
+            ),
           ],
         ),
         actions: [
