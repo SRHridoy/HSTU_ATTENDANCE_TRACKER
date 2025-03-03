@@ -125,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       leading: CircleAvatar(
                         backgroundColor: Colors.white,
                         child: Text(
-                          '${courses[index][CourseDBHelper.COLUMN_COURSE_SNO]}',
+                          '${courses[index][CourseDBHelper.COLUMN_BATCH_NAME]}',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.black),
                         ),
@@ -154,6 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           return AttendanceScreen(
                             tableName:
                                 '${courses[index][CourseDBHelper.COLUMN_COUSE_CODE]}',
+                                credit: courses[index][CourseDBHelper.COLUMN_CREDIT],
                           );
                         }));
                       },
@@ -221,7 +222,8 @@ class _HomeScreenState extends State<HomeScreen> {
     String? selectedBatch = course?[CourseDBHelper.COLUMN_BATCH_NAME];
     String? selectedSession = course?[CourseDBHelper.COLUMN_SESSION];
     ///Dev khaled Create a Column named COLUMN_COURSE_CREDIT and then Uncomment the below line
-    String? selectedCredit = course?[CourseDBHelper.COLUMN_COURSE_CREDIT];
+    ///Resolved:SRHridoy
+    String? selectedCredit = course?[CourseDBHelper.COLUMN_CREDIT];
 
     courseCodeController.text = course?[CourseDBHelper.COLUMN_COUSE_CODE] ?? '';
     courseNameController.text = course?[CourseDBHelper.COLUMN_COUSE_NAME] ?? '';
@@ -247,7 +249,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 DropdownButtonFormField<String>(
                   decoration: InputDecoration(labelText: "Course Credit"),
                   ///Dev khaled Uncomment the below line after creating the column
-                  value: selectedCredit,
+                  ///Resolved : SRHridoy
+                  // value: selectedCredit,
                   items: ['2', '3']
                       .map((credit) => DropdownMenuItem(
                     value: credit,
@@ -257,6 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onChanged: (value) {
                     setState(() {
                       ///Dev khaled Uncomment the below line after creating the column
+                      ///resolved
                       selectedCredit = value;
                     });
                   },
@@ -324,20 +328,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (courseCodeController.text.isNotEmpty &&
                         courseNameController.text.isNotEmpty &&
                         selectedBatch != null &&
-                        selectedSession != null) {
+                        selectedSession != null &&
+                        selectedCredit != null) {
+                      int credit = int.parse(selectedCredit!);
+                      String courseCode = courseCodeController.text;
+                      String tableName = clearString(courseCode);
                       if (course == null) {
                         /// Insert new course
                         bool inserted = await dbRef.addCourse(
-                          courseCode: courseCodeController.text,
+                          courseCode: tableName,
                           courseName: courseNameController.text,
                           batchName: selectedBatch!,
                           session: selectedSession!,
-                          courseCredit: int.parse(selectedCredit!), // Add this line
+                          credit: credit
                         );
                         // create new student table if not exists
                         final caching = Caching();
                         caching.saveStudentsToLocalDatabase(
-                          courseCodeController.text,
+                          tableName,
                           selectedBatch!,
                           selectedSession!,
                         );
@@ -346,10 +354,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         /// Update existing course
                         bool updated = await dbRef.updateCourse(
                           sno: course[CourseDBHelper.COLUMN_COURSE_SNO],
-                          courseCode: courseCodeController.text,
+                          courseCode: tableName,
                           courseName: courseNameController.text,
                           batchName: selectedBatch!,
                           session: selectedSession!,
+                          credit: credit
                         );
                         if (updated) getCourses();
                       }
@@ -365,5 +374,8 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+  }
+  String clearString(String input){
+    return input.split(' ').join('');
   }
 }
