@@ -7,24 +7,32 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 Future<void> exportToExcel(String tableName) async {
-  print("Entering exportToExcel() function...");
+  if (kDebugMode) {
+    print("Entering exportToExcel() function...");
+  }
   final dbHelper = DatabaseHelper();
   var columnNames = await dbHelper.getColumnNames(tableName);
   // fetch students data from local database
   var data = await dbHelper.fetchLocalData(tableName);
   if (data.isEmpty) {
-    print("No data found in the database for $tableName.");
+    if (kDebugMode) {
+      print("No data found in the database for $tableName.");
+    }
     return;
   }
   else{
-    print("Data found in the database for $tableName.");
+    if (kDebugMode) {
+      print("Data found in the database for $tableName.");
+    }
   }
 
   //Create a new Excel workbook
   var excel = Excel.createExcel();
   Sheet sheet = excel['Sheet1'];
 
-  print("Creating Excel file...");
+  if (kDebugMode) {
+    print("Creating Excel file...");
+  }
 
   // Header Add in Excel
   sheet.appendRow(columnNames.map((e) => TextCellValue(e)).toList());
@@ -48,14 +56,18 @@ Future<void> exportToExcel(String tableName) async {
 
     sheet.appendRow(rowData);
   }
-  print("Excel file created successfully.");
+  if (kDebugMode) {
+    print("Excel file created successfully.");
+  }
 
   // Save the Excel file
   var directory = await getApplicationDocumentsDirectory();
   var filePath = '${directory.path}/$tableName.xlsx';
   var file = File(filePath);
 
-  print("Saving Excel file to: $filePath");
+  if (kDebugMode) {
+    print("Saving Excel file to: $filePath");
+  }
 
   var excelBytes = excel.save();
 
