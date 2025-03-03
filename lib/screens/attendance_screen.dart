@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hstu_attendance_tracker/screens/student_list_screen.dart';
 import 'package:hstu_attendance_tracker/services/db_services/students_db_helper.dart';
+import 'package:hstu_attendance_tracker/services/excel_services/sqflite_table_to_excle.dart';
 
 class AttendanceScreen extends StatefulWidget {
   final String tableName;
@@ -29,6 +30,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     final List<Map<String, dynamic>> data =
         await DatabaseHelper().fetchLocalStudents(widget.tableName);
 
+    debugPrint("Fetched Data: $data"); // ✅ Debugging
+
     setState(() {
       _attendanceData = data;
       _isLoading = false;
@@ -40,15 +43,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 key != 'name' &&
                 key != 'created_at' &&
                 key != 'session' &&
-                key != 'dept')
+                key != 'dept' &&
+                key !=
+                    'Obtained_mark') // ✅ Make sure Obtained_mark is not skipped
             .toList();
         _dates.sort((a, b) => a.compareTo(b));
       }
     });
   }
 
-  void _navigateToStudentListScreen() async {
-    final result = await Navigator.push(
+  void _takeAttendance() async {
+    final result = await Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => StudentListScreen(tableName: widget.tableName),
@@ -60,17 +65,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 
-  void _takeAttendance() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => StudentListScreen(tableName: widget.tableName),
-      ),
-    );
-
-    if (result == true) {
-      _fetchData();
-    }
+  String getMark(int attendanceCount) {
+    int totalDate = _dates.length;
+    double totalMark = attendanceCount / totalDate * 100;
+    return totalMark
+        .toStringAsFixed(2); // Convert mark to string with 2 decimal places
   }
 
   @override
@@ -88,9 +87,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             onPressed: _fetchData, // Refresh attendance data
           ),
           IconButton(
-            icon: Icon(Icons.list, color: Colors.white),
-            onPressed: _navigateToStudentListScreen,
-          ),
+              icon: Icon(Icons.list, color: Colors.white),
+              onPressed: () {
+                exportToExcel(widget.tableName);
+              } // Export to Excel
+              ),
         ],
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -119,7 +120,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             DataTable(
                               headingRowColor: MaterialStateProperty.all(
                                   Colors.blueAccent.shade100),
-                              dataRowColor: MaterialStateProperty.all(Colors.white),
+                              dataRowColor:
+                                  MaterialStateProperty.all(Colors.white),
                               border: TableBorder.all(color: Colors.blueAccent),
                               columns: [
                                 DataColumn(
@@ -130,6 +132,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     label: Text('Name',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold))),
+                                DataColumn(
+                                    label: Text('Optained Mark',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold))),
                                 ..._dates.map((date) => DataColumn(
                                     label: Text(date,
                                         style: TextStyle(
@@ -137,19 +143,28 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                               rows: _attendanceData.map((student) {
                                 return DataRow(cells: [
-                                  DataCell(Text(student['student_id'].toString())),
+                                  DataCell(
+                                      Text(student['student_id'].toString())),
                                   DataCell(
                                     ConstrainedBox(
-                                      constraints: BoxConstraints(maxWidth: 150),
+                                      constraints:
+                                          BoxConstraints(maxWidth: 150),
                                       child: Text(student['name'],
                                           overflow: TextOverflow.ellipsis),
                                     ),
                                   ),
+                                  DataCell(Text(
+                                    getMark(student['Obtained_mark']),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  )),
                                   ..._dates.map((date) {
-                                    final attendance = student[date]?.toString() ?? 'N/A';
+                                    final attendance =
+                                        student[date]?.toString() ?? 'N/A';
                                     return DataCell(
                                       Container(
-                                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 8, horizontal: 4),
                                         child: Text(attendance),
                                       ),
                                     );
@@ -177,7 +192,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 elevation: 5,
               ),
               child: Text(
-                'Complete Attendance',
+                'Take Attendance',
                 style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
