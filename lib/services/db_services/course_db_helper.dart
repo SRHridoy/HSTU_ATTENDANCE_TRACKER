@@ -15,8 +15,9 @@ class CourseDBHelper {
   static final String COLUMN_COURSE_SNO = 'course_sno';
   static final String COLUMN_COUSE_CODE = 'course_code';
   static final String COLUMN_COUSE_NAME = 'course_name';
-  static final String COLUMN_BATCH_NAME = 'batch_no';
+  static final String COLUMN_BATCH_NAME = 'batch_name';
   static final String COLUMN_SESSION = 'session';
+  static final String COLUMN_COURSE_CREDIT = 'course_credit'; // Add this line
 
   Database? myDb;
 
@@ -36,7 +37,8 @@ class CourseDBHelper {
         $COLUMN_COUSE_CODE TEXT,
         $COLUMN_COUSE_NAME TEXT,
         $COLUMN_BATCH_NAME TEXT,
-        $COLUMN_SESSION   TEXT
+        $COLUMN_SESSION TEXT,
+        $COLUMN_COURSE_CREDIT INTEGER // Add this line
       );
       ''');
     }, version: 1);
@@ -47,7 +49,9 @@ class CourseDBHelper {
       {required String courseCode,
         required String courseName,
         required String batchName,
-        required String session}) async{
+        required String session,
+        required int courseCredit, // Add this parameter
+      }) async{
 
     var db = await getDB();
 
@@ -55,7 +59,8 @@ class CourseDBHelper {
       COLUMN_COUSE_CODE:courseCode,
       COLUMN_COUSE_NAME:courseName,
       COLUMN_BATCH_NAME:batchName,
-      COLUMN_SESSION:session
+      COLUMN_SESSION:session,
+      COLUMN_COURSE_CREDIT: courseCredit, // Add this line
     });
 
     return rowsEffected>0;

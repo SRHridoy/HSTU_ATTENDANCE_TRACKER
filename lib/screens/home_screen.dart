@@ -221,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String? selectedBatch = course?[CourseDBHelper.COLUMN_BATCH_NAME];
     String? selectedSession = course?[CourseDBHelper.COLUMN_SESSION];
     ///Dev khaled Create a Column named COLUMN_COURSE_CREDIT and then Uncomment the below line
-   // String? selectedCredit = course?[CourseDBHelper.COLUMN_COURSE_CREDIT];
+    String? selectedCredit = course?[CourseDBHelper.COLUMN_COURSE_CREDIT];
 
     courseCodeController.text = course?[CourseDBHelper.COLUMN_COUSE_CODE] ?? '';
     courseNameController.text = course?[CourseDBHelper.COLUMN_COUSE_NAME] ?? '';
@@ -247,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 DropdownButtonFormField<String>(
                   decoration: InputDecoration(labelText: "Course Credit"),
                   ///Dev khaled Uncomment the below line after creating the column
-                  // value: selectedCredit,
+                  value: selectedCredit,
                   items: ['2', '3']
                       .map((credit) => DropdownMenuItem(
                     value: credit,
@@ -257,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onChanged: (value) {
                     setState(() {
                       ///Dev khaled Uncomment the below line after creating the column
-                      // selectedCredit = value;
+                      selectedCredit = value;
                     });
                   },
                 ),
@@ -332,6 +332,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           courseName: courseNameController.text,
                           batchName: selectedBatch!,
                           session: selectedSession!,
+                          courseCredit: int.parse(selectedCredit!), // Add this line
                         );
                         // create new student table if not exists
                         final caching = Caching();
