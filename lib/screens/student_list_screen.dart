@@ -50,6 +50,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
     await DatabaseHelper().updateAttendance(
         widget.tableName, studentId.toString(), selectedDate, newStatus);
+    setState(() {
+      _studentsFuture = _loadStudents();
+    });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -60,8 +63,11 @@ class _StudentListScreenState extends State<StudentListScreen> {
       lastDate: DateTime(2030),
     );
     if (pickedDate != null) {
+      String newDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+      await DatabaseHelper().addNewDateColumn(widget.tableName, newDate);
+
       setState(() {
-        selectedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+        selectedDate = newDate;
         _initializeData(); // Ensure attendance status is updated correctly
       });
     }
@@ -127,8 +133,11 @@ class _StudentListScreenState extends State<StudentListScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: GestureDetector(
-                          onTap: () => _updateAttendance(
-                              student['student_id'].toString()),
+                          onTap: () {
+                            _updateAttendance(student['student_id'].toString());
+                            _updateAttendance(student['student_id'].toString());
+                            _updateAttendance(student['student_id'].toString());
+                          },
                           child: ListTile(
                             contentPadding: EdgeInsets.all(16),
                             leading: CircleAvatar(
@@ -183,7 +192,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
                 elevation: 5,
               ),
               child: Text(
-                'Take Attendance',
+                'Complete Attendance',
                 style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
