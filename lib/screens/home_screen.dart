@@ -220,6 +220,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void showCourseDialog({Map<String, dynamic>? course}) {
     String? selectedBatch = course?[CourseDBHelper.COLUMN_BATCH_NAME];
     String? selectedSession = course?[CourseDBHelper.COLUMN_SESSION];
+    ///Dev khaled Create a Column named COLUMN_COURSE_CREDIT and then Uncomment the below line
+   // String? selectedCredit = course?[CourseDBHelper.COLUMN_COURSE_CREDIT];
 
     courseCodeController.text = course?[CourseDBHelper.COLUMN_COUSE_CODE] ?? '';
     courseNameController.text = course?[CourseDBHelper.COLUMN_COUSE_NAME] ?? '';
@@ -240,6 +242,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 TextField(
                   controller: courseNameController,
                   decoration: InputDecoration(labelText: "Course Name"),
+                ),
+                SizedBox(height: 10),
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(labelText: "Course Credit"),
+                  ///Dev khaled Uncomment the below line after creating the column
+                  // value: selectedCredit,
+                  items: ['2', '3']
+                      .map((credit) => DropdownMenuItem(
+                    value: credit,
+                    child: Text(credit),
+                  ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      ///Dev khaled Uncomment the below line after creating the column
+                      // selectedCredit = value;
+                    });
+                  },
                 ),
                 SizedBox(height: 10),
                 DropdownButtonFormField<String>(
