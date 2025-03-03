@@ -5,8 +5,8 @@ import 'package:hstu_attendance_tracker/services/excel_services/sqflite_table_to
 
 class AttendanceScreen extends StatefulWidget {
   final String tableName;
-  final int credit=3;
-  const AttendanceScreen({super.key, required this.tableName});
+  final int credit;
+  const AttendanceScreen({super.key, required this.tableName, required this.credit});
 
   @override
   _AttendanceScreenState createState() => _AttendanceScreenState();
@@ -59,7 +59,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     final result = await Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => StudentListScreen(tableName: widget.tableName),
+        builder: (context) => StudentListScreen(tableName: widget.tableName,
+        credit: credit),
       ),
     );
 
