@@ -5,7 +5,9 @@ import 'package:hstu_attendance_tracker/services/db_services/students_db_helper.
 
 class StudentListScreen extends StatefulWidget {
   final String tableName;
-  const StudentListScreen({super.key, required this.tableName});
+  final int credit;
+  const StudentListScreen(
+      {super.key, required this.tableName, required this.credit});
 
   @override
   _StudentListScreenState createState() => _StudentListScreenState();
@@ -50,9 +52,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
     await DatabaseHelper().updateAttendance(
         widget.tableName, studentId.toString(), selectedDate, newStatus);
-    setState(() {
-      _studentsFuture = _loadStudents();
-    });
+    // setState(() {
+    //   _studentsFuture = _loadStudents();
+    // });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -108,69 +110,82 @@ class _StudentListScreenState extends State<StudentListScreen> {
       body: Stack(
         children: [
           FutureBuilder<List<Map<String, dynamic>>>(
-              future: _studentsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text("Error: ${snapshot.error}"));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text("No students found."));
-                }
+            future: _studentsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text("Error: ${snapshot.error}"));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text("No students found."));
+              }
 
-                final students = snapshot.data!;
+              final students = snapshot.data!;
 
-                return ListView.builder(
-                  itemCount: students.length,
-                  itemBuilder: (context, index) {
-                    final student = students[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            _updateAttendance(student['student_id'].toString());
-                            _updateAttendance(student['student_id'].toString());
-                            _updateAttendance(student['student_id'].toString());
-                          },
-                          child: ListTile(
-                            contentPadding: EdgeInsets.all(16),
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.blueAccent,
-                              child: Text(
-                                student['name'][0],
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: students.length,
+                      itemBuilder: (context, index) {
+                        final student = students[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                _updateAttendance(
+                                    student['student_id'].toString());
+                                _updateAttendance(
+                                    student['student_id'].toString());
+                                _updateAttendance(
+                                    student['student_id'].toString());
+                              },
+                              child: ListTile(
+                                contentPadding: EdgeInsets.all(16),
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.blueAccent,
+                                  child: Text(
+                                    student['name'][0],
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                                title: Text(
+                                  "${student['student_id'].toString()} - ${student['name']}",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text(
+                                    "Dept: ${student['dept']} | Session: ${student['session']}"),
+                                trailing: Text(
+                                  attendanceStatus[
+                                          student['student_id'].toString()] ??
+                                      "❌",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
-                            title: Text(
-                              "${student['student_id'].toString()} - ${student['name']}",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Text(
-                                "Dept: ${student['dept']} | Session: ${student['session']}"),
-                            trailing: Text(
-                              attendanceStatus[
-                                      student['student_id'].toString()] ??
-                                  "❌",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 50), // Add extra space below the ListView
+                ],
+              );
+            },
+          ),
           Positioned(
             bottom: 20,
             left: 20,
@@ -179,7 +194,8 @@ class _StudentListScreenState extends State<StudentListScreen> {
               onPressed: () {
                 Navigator.pushReplacement(context, MaterialPageRoute(
                   builder: (context) {
-                    return AttendanceScreen(tableName: widget.tableName);
+                    return AttendanceScreen(
+                        tableName: widget.tableName, credit: widget.credit);
                   },
                 ));
               },
