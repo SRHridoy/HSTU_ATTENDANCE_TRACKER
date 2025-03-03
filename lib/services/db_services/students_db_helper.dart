@@ -116,9 +116,6 @@ class DatabaseHelper {
     // Execute the SQL query to drop the table
     await db.execute('DROP TABLE IF EXISTS $tableName');
 
-    // Close the database
-    await db.close();
-
     if (kDebugMode) {
       print("⚠️ Table '$tableName' deleted!");
     }
