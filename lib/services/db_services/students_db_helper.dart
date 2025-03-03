@@ -49,12 +49,13 @@ class DatabaseHelper {
           name TEXT,
           dept TEXT,
           session TEXT,
-          created_at TEXT
+          created_at TEXT,
+          Obtained_mark INTEGER DEFAULT 0
         )
       ''');
       if (kDebugMode) print("✅ Table '$tableName' created successfully.");
     } else {
-      // If table exists, ensure it has the necessary columns (e.g., 'created_at' column)
+      // If table exists, ensure it has the necessary columns (e.g., 'created_at' and 'Obtained_mark' columns)
       final columnsResult = await db.rawQuery("PRAGMA table_info($tableName)");
       List<String> existingColumns =
           columnsResult.map((col) => col["name"] as String).toList();
@@ -63,6 +64,14 @@ class DatabaseHelper {
       if (!existingColumns.contains("created_at")) {
         await db.execute("ALTER TABLE $tableName ADD COLUMN created_at TEXT");
         if (kDebugMode) print("✅ 'created_at' column added to '$tableName'.");
+      }
+
+      // Add 'Obtained_mark' column if it doesn't exist
+      if (!existingColumns.contains("Obtained_mark")) {
+        await db.execute(
+            "ALTER TABLE $tableName ADD COLUMN Obtained_mark INTEGER DEFAULT 0");
+        if (kDebugMode)
+          print("✅ 'Obtained_mark' column added to '$tableName'.");
       }
     }
   }
@@ -154,21 +163,19 @@ class DatabaseHelper {
   Future<void> updateAttendance(
       String tableName, String studentId, String date, String status) async {
     final db = await database;
-    await createTableIfNotExists(
-        tableName); // Ensure the table exists before querying
+    await createTableIfNotExists(tableName); // Ensure the table exists before querying
 
-    // Jodi column na thake, tahole add kore nibe
+    // Ensure the attendance column for the date exists
     String columnName = '"$date"'; // Ensuring correct SQL syntax
     bool columnExists = await _checkIfColumnExists(db, tableName, date);
 
     if (!columnExists) {
-      // Jodi column na thake, tahole add kore nibe
       await db.execute(
           'ALTER TABLE "$tableName" ADD COLUMN $columnName TEXT DEFAULT "❌"');
       if (kDebugMode) print("✅ New date column '$date' added to '$tableName'");
     }
 
-    // Attendance Update Query
+    // Update Attendance Status
     int updatedRows = await db.rawUpdate(
         'UPDATE "$tableName" SET $columnName = ? WHERE student_id = ?',
         [status, studentId]);
@@ -177,11 +184,56 @@ class DatabaseHelper {
       if (kDebugMode) {
         print("✅ Attendance updated for Student ID: $studentId on $date");
       }
+
+      // **Properly Count All "✅" Attendance Across All Dates**
+      final studentData = await db
+          .query(tableName, where: 'student_id = ?', whereArgs: [studentId]);
+
+      if (studentData.isNotEmpty) {
+        int attendanceCount = 0;
+
+        // Iterate over all columns, counting "✅"
+        studentData.first.forEach((key, value) {
+          if (key != 'student_id' &&
+              key != 'name' &&
+              key != 'created_at' &&
+              key != 'session' &&
+              key != 'dept' &&
+              key != 'Obtained_mark' && // Exclude non-attendance columns
+              value == "✅") {
+            attendanceCount++;
+          }
+        });
+
+        if (kDebugMode) {
+          print("�� Total Attendance of $studentId : $attendanceCount");
+        }
+
+        // **Update Obtained_mark**
+        await db.rawUpdate(
+            'UPDATE "$tableName" SET Obtained_mark = ? WHERE student_id = ?',
+            [attendanceCount, studentId]);
+
+        if (kDebugMode) {
+          print(
+              "✅ Obtained_mark updated for Student ID: $studentId to $attendanceCount");
+        }
+      }
     } else {
       if (kDebugMode) {
         print(
             "⚠️ No matching student found with ID: $studentId in '$tableName'");
       }
     }
+  }
+
+// Fetch All Column name from a specific table
+  Future<List<String>> getColumnNames(String tableName) async {
+    final db = await database;
+    await createTableIfNotExists(
+        tableName); // Ensure the table exists before querying
+
+    var result = await db.rawQuery('PRAGMA table_info($tableName)');
+    return result.map((column) => column['name'].toString()).toList();
   }
 }
