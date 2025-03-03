@@ -5,6 +5,7 @@ import 'package:hstu_attendance_tracker/services/excel_services/sqflite_table_to
 
 class AttendanceScreen extends StatefulWidget {
   final String tableName;
+  final int credit=3;
   const AttendanceScreen({super.key, required this.tableName});
 
   @override
@@ -15,11 +16,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   List<Map<String, dynamic>> _attendanceData = [];
   List<String> _dates = [];
   bool _isLoading = true;
+  late int credit ;
 
   @override
   void initState() {
     super.initState();
     _fetchData();
+    credit = widget.credit;
   }
 
   Future<void> _fetchData() async {
@@ -67,7 +70,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
   String getMark(int attendanceCount) {
     int totalDate = _dates.length;
-    double totalMark = attendanceCount / totalDate * 100;
+    double totalMark = attendanceCount / totalDate * 5 * credit;
     return totalMark
         .toStringAsFixed(2); // Convert mark to string with 2 decimal places
   }
